@@ -32,8 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-//@DatabaseSetup(value = "classpath:dataset/dataset.xml", type = DatabaseOperation.DELETE_ALL)
-@DatabaseSetup(value = "classpath:dataset/dataset.xml", type = DatabaseOperation.CLEAN_INSERT)
+@DatabaseSetup(value = "classpath:dataset/dataset.xml")
 @AutoConfigureMockMvc
 @SpringBootTest(classes = MysqlApplication.class)
 public class UserControllerTest {
@@ -52,6 +51,8 @@ public class UserControllerTest {
         assertThat(userController).isNotNull();
     }
 
+
+    // POST
     @Test
     @ExpectedDatabase("classpath:dataset/datasetAfterPost.xml")
     public void postRequestTest() throws Exception {
@@ -146,6 +147,17 @@ public class UserControllerTest {
     }
 
     @Test
+    @ExpectedDatabase("classpath:dataset/dataset.xml")
+    public void postRequestWithEmptyBodyTest() throws Exception {
+        this.mockMvc.perform(post("/users"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        System.out.println(userRepository.findAll());
+    }
+
+
+    // DELETE
+    @Test
     @ExpectedDatabase(value = "classpath:dataset/datasetAfterDelete.xml")
     public void deleteRequestTest() throws Exception {
         this.mockMvc.perform(delete("/users/3"))
@@ -172,6 +184,8 @@ public class UserControllerTest {
         System.out.println(userRepository.findAll());
     }
 
+
+    // PUT
     @Test
     @ExpectedDatabase("classpath:dataset/datasetAfterPut.xml")
     public void putRequestTest() throws Exception {
@@ -218,8 +232,35 @@ public class UserControllerTest {
 
     @Test
     @ExpectedDatabase("classpath:dataset/dataset.xml")
+    public void putRequestWithEmptyBodyTest() throws Exception {
+        this.mockMvc.perform(put("/users/3"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        System.out.println(userRepository.findAll());
+    }
+
+    @Test
+    @ExpectedDatabase("classpath:dataset/dataset.xml")
     public void putRequestWithChangeEmailTest() throws Exception {
         this.mockMvc.perform(put("/users/3")
+                .contentType("application/json")
+                .content("{\"username\": \"SuttyRead3\"," +
+                        "\"password\": \"SuttyRead3\"," +
+                        "\"confirmPassword\": \"SuttyRead3\"," +
+                        "\"email\": \"SuttyRead311@gmail.com\"," +
+                        "\"firstName\": \"Suttyqqq\"," +
+                        "\"lastName\": \"Readqqq\"," +
+                        "\"birthday\": \"1980-10-10\"," +
+                        "\"role\": \"USER\"}"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+        System.out.println(userRepository.findAll());
+    }
+
+    @Test
+    @ExpectedDatabase("classpath:dataset/dataset.xml")
+    public void putRequestWithUnknownIdTest() throws Exception {
+        this.mockMvc.perform(put("/users/10")
                 .contentType("application/json")
                 .content("{\"username\": \"SuttyRead3\"," +
                         "\"password\": \"SuttyRead3\"," +
@@ -252,6 +293,8 @@ public class UserControllerTest {
         System.out.println(userRepository.findAll());
     }
 
+
+    //GET
     @Test
     public void getRequestTest() throws Exception {
         this.mockMvc.perform(get("/users"))
@@ -317,6 +360,13 @@ public class UserControllerTest {
     @Test
     public void getOneUserRequestWithInvalidIdTest() throws Exception {
         this.mockMvc.perform(get("/users/nix"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getOneUserRequestWithNullIdTest() throws Exception {
+        this.mockMvc.perform(get("/users/%"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }

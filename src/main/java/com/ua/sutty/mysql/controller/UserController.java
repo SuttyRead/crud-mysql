@@ -48,10 +48,6 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
-        if (id == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
         User user = userRepository.findUserById(id);
 
         if (user == null) {
@@ -66,7 +62,6 @@ public class UserController {
         if (userForm == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        System.out.println("UserForm: " + userForm);
         User user = userForm.toUser();
         this.userRepository.save(user);
 
