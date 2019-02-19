@@ -34,9 +34,11 @@ public class User {
     private String email;
 
     @Pattern(regexp = "[A-Z][a-z]{1,25}")
+    @Column(name = "first_name")
     private String firstName;
 
     @Pattern(regexp = "[A-Z][a-z]{1,25}")
+    @Column(name = "last_name")
     private String lastName;
 
     @Past

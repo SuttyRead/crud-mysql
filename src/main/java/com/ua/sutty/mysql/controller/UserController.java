@@ -40,7 +40,7 @@ public class UserController {
         List<User> users = this.userRepository.findAll();
 
         if (users.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -66,7 +66,7 @@ public class UserController {
         if (userForm == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
+        System.out.println("UserForm: " + userForm);
         User user = userForm.toUser();
         this.userRepository.save(user);
 
@@ -81,6 +81,10 @@ public class UserController {
         if (!userRepository.existsById(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        User userById = userRepository.findUserById(id);
+        if (!userById.getUsername().equals(user.getUsername()) || !userById.getEmail().equals(user.getEmail())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         user.setId(id);
         this.userRepository.save(user);
 
@@ -88,7 +92,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable("id") Long  id) {
+    public ResponseEntity<User> deleteUser(@PathVariable("id") Long id) {
         User user = this.userRepository.findUserById(id);
 
         if (user == null) {
