@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class})
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
+//@DatabaseSetup(value = "classpath:dataset/dataset.xml", type = DatabaseOperation.DELETE_ALL)
 @DatabaseSetup(value = "classpath:dataset/dataset.xml", type = DatabaseOperation.CLEAN_INSERT)
 @AutoConfigureMockMvc
 @SpringBootTest(classes = MysqlApplication.class)
@@ -64,6 +65,14 @@ public class UserControllerTest {
                         "\"lastName\": \"Read\"," +
                         "\"birthday\": \"1980-10-10\"}"))
                 .andDo(print())
+                .andExpect(content().json("{\"id\":4," +
+                        "\"username\":\"SuttyRead4\"," +
+                        "\"password\":\"SuttyRead4\"," +
+                        "\"email\":\"SuttyRead4@gmail.com\"," +
+                        "\"firstName\":\"Sutty\"," +
+                        "\"lastName\":\"Read\"," +
+                        "\"birthday\":\"1980-10-10\"," +
+                        "\"role\":\"USER\"}"))
                 .andExpect(status().isCreated());
         System.out.println(userRepository.findAll());
     }
@@ -157,7 +166,7 @@ public class UserControllerTest {
     @Test
     @ExpectedDatabase(value = "classpath:dataset/dataset.xml")
     public void deleteRequestWithInvalidIdTest() throws Exception {
-        this.mockMvc.perform(delete("/users/hnfgbvdfgf"))
+        this.mockMvc.perform(delete("/users/nix"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
         System.out.println(userRepository.findAll());
@@ -243,6 +252,73 @@ public class UserControllerTest {
         System.out.println(userRepository.findAll());
     }
 
+    @Test
+    public void getRequestTest() throws Exception {
+        this.mockMvc.perform(get("/users"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\"id\":1," +
+                        "\"username\":\"SuttyRead1\"," +
+                        "\"password\":\"SuttyRead1\"," +
+                        "\"email\":\"SuttyRead1@gmail.com\"," +
+                        "\"firstName\":\"Sutty\"," +
+                        "\"lastName\":\"Read\"," +
+                        "\"birthday\":\"1980-10-10\"," +
+                        "\"role\":\"USER\"}," +
+                        "{\"id\":2," +
+                        "\"username\":\"SuttyRead2\"," +
+                        "\"password\":\"SuttyRead2\"," +
+                        "\"email\":\"SuttyRead2@gmail.com\"," +
+                        "\"firstName\":\"Sutty\"," +
+                        "\"lastName\":\"Read\"," +
+                        "\"birthday\":\"1980-10-10\"," +
+                        "\"role\":\"USER\"}," +
+                        "{\"id\":3," +
+                        "\"username\":\"SuttyRead3\"," +
+                        "\"password\":\"SuttyRead3\"," +
+                        "\"email\":\"SuttyRead3@gmail.com\"," +
+                        "\"firstName\":\"Sutty\"," +
+                        "\"lastName\":\"Read\"," +
+                        "\"birthday\":\"1980-10-10\"," +
+                        "\"role\":\"USER\"}" +
+                        "]"));
+    }
 
+    @Test
+    @DatabaseSetup(type = DatabaseOperation.DELETE_ALL)
+    public void getRequestIfUsersNotExistsTest() throws Exception {
+        this.mockMvc.perform(get("/users"))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void getOneUserRequestTest() throws Exception {
+        this.mockMvc.perform(get("/users/1"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"id\":1," +
+                        "\"username\":\"SuttyRead1\"," +
+                        "\"password\":\"SuttyRead1\"," +
+                        "\"email\":\"SuttyRead1@gmail.com\"," +
+                        "\"firstName\":\"Sutty\"," +
+                        "\"lastName\":\"Read\"," +
+                        "\"birthday\":\"1980-10-10\"," +
+                        "\"role\":\"USER\"},"));
+    }
+
+    @Test
+    public void getOneUserRequestWithUnknownIdTest() throws Exception {
+        this.mockMvc.perform(get("/users/10"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getOneUserRequestWithInvalidIdTest() throws Exception {
+        this.mockMvc.perform(get("/users/nix"))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 
 }
