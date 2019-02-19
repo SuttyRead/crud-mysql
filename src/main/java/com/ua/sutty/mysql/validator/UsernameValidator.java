@@ -11,17 +11,17 @@ public class UsernameValidator implements Validator {
 
     private final UserRepository userRepository;
 
-    public UsernameValidator(UserRepository userRepository) {
+    public UsernameValidator(final UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
-    public boolean supports(Class<?> aClass) {
+    public boolean supports(final Class<?> aClass) {
         return UserForm.class.equals(aClass);
     }
 
     @Override
-    public void validate(Object o, Errors errors) {
+    public void validate(final Object o, final Errors errors) {
         UserForm userForm = (UserForm) o;
         if (userRepository.existsByUsername(userForm.getUsername())) {
             errors.rejectValue("username", "This username already registered");

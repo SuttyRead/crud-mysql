@@ -11,17 +11,17 @@ public class EmailValidator implements Validator {
 
     private final UserRepository userRepository;
 
-    public EmailValidator(UserRepository userRepository) {
+    public EmailValidator(final UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
-    public boolean supports(Class<?> aClass) {
+    public boolean supports(final Class<?> aClass) {
         return UserForm.class.equals(aClass);
     }
 
     @Override
-    public void validate(Object o, Errors errors) {
+    public void validate(final Object o, final Errors errors) {
         UserForm userForm = (UserForm) o;
         if (userRepository.existsByEmail(userForm.getEmail())) {
             errors.rejectValue("email", "This email already registered");

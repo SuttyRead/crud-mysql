@@ -22,15 +22,16 @@ public class UserController {
 
     private final UsernameValidator usernameValidator;
 
-    public UserController(UserRepository userRepository, EmailValidator emailValidator,
-                          UsernameValidator usernameValidator) {
+    public UserController(final UserRepository userRepository,
+                          final EmailValidator emailValidator,
+                          final UsernameValidator usernameValidator) {
         this.userRepository = userRepository;
         this.emailValidator = emailValidator;
         this.usernameValidator = usernameValidator;
     }
 
     @InitBinder("userForm")
-    public void addBinder(WebDataBinder binder) {
+    public void addBinder(final WebDataBinder binder) {
         binder.addValidators(emailValidator);
         binder.addValidators(usernameValidator);
     }
@@ -47,7 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
+    public ResponseEntity<User> getUser(@PathVariable("id") final Long id) {
         User user = userRepository.findUserById(id);
 
         if (user == null) {
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> saveUser(@RequestBody @Valid UserForm userForm) {
+    public ResponseEntity<User> saveUser(@RequestBody @Valid final UserForm userForm) {
         if (userForm == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -69,7 +70,8 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@RequestBody @Valid User user, @PathVariable Long id) {
+    public ResponseEntity<User> updateUser(@RequestBody @Valid final User user,
+                                           @PathVariable final Long id) {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -77,7 +79,8 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         User userById = userRepository.findUserById(id);
-        if (!userById.getUsername().equals(user.getUsername()) || !userById.getEmail().equals(user.getEmail())) {
+        if (!userById.getUsername().equals(user.getUsername())
+                || !userById.getEmail().equals(user.getEmail())) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         user.setId(id);
@@ -87,7 +90,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<User> deleteUser(@PathVariable("id") final Long id) {
         User user = this.userRepository.findUserById(id);
 
         if (user == null) {
