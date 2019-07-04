@@ -47,7 +47,7 @@ public class UserControllerTest {
     private UserController userController;
 
     @Test
-    public void checkLoadUserController() throws Exception {
+    public void checkLoadUserController() {
         assertThat(userController).isNotNull();
     }
 
@@ -92,7 +92,6 @@ public class UserControllerTest {
                         "\"birthday\": \"1980-10-10\"}"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
     }
 
     @Test
@@ -109,7 +108,6 @@ public class UserControllerTest {
                         "\"birthday\": \"1980-10-10\"}"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
     }
 
     @Test
@@ -126,7 +124,6 @@ public class UserControllerTest {
                         "\"birthday\": \"1980-10-10\"}"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
     }
 
     @Test
@@ -143,7 +140,6 @@ public class UserControllerTest {
                         "\"birthday\": \"2020-10-10\"}"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
     }
 
     @Test
@@ -152,7 +148,6 @@ public class UserControllerTest {
         this.mockMvc.perform(post("/users"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
     }
 
 
@@ -172,7 +167,6 @@ public class UserControllerTest {
         this.mockMvc.perform(delete("/users/4"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
-        System.out.println(userRepository.findAll());
     }
 
     @Test
@@ -181,7 +175,6 @@ public class UserControllerTest {
         this.mockMvc.perform(delete("/users/nix"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
     }
 
 
@@ -214,47 +207,10 @@ public class UserControllerTest {
 
     @Test
     @ExpectedDatabase("classpath:dataset/dataset.xml")
-    public void putRequestWithChangeUsernameTest() throws Exception {
-        this.mockMvc.perform(put("/users/3")
-                .contentType("application/json")
-                .content("{\"username\": \"SuttyRead1\"," +
-                        "\"password\": \"SuttyRead3\"," +
-                        "\"confirmPassword\": \"SuttyRead3\"," +
-                        "\"email\": \"SuttyRead3@gmail.com\"," +
-                        "\"firstName\": \"Suttyqqq\"," +
-                        "\"lastName\": \"Readqqq\"," +
-                        "\"birthday\": \"1980-10-10\"," +
-                        "\"role\": \"USER\"}"))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
-    }
-
-    @Test
-    @ExpectedDatabase("classpath:dataset/dataset.xml")
     public void putRequestWithEmptyBodyTest() throws Exception {
         this.mockMvc.perform(put("/users/3"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
-    }
-
-    @Test
-    @ExpectedDatabase("classpath:dataset/dataset.xml")
-    public void putRequestWithChangeEmailTest() throws Exception {
-        this.mockMvc.perform(put("/users/3")
-                .contentType("application/json")
-                .content("{\"username\": \"SuttyRead3\"," +
-                        "\"password\": \"SuttyRead3\"," +
-                        "\"confirmPassword\": \"SuttyRead3\"," +
-                        "\"email\": \"SuttyRead311@gmail.com\"," +
-                        "\"firstName\": \"Suttyqqq\"," +
-                        "\"lastName\": \"Readqqq\"," +
-                        "\"birthday\": \"1980-10-10\"," +
-                        "\"role\": \"USER\"}"))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
     }
 
     @Test
@@ -272,7 +228,6 @@ public class UserControllerTest {
                         "\"role\": \"USER\"}"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
     }
 
     @Test
@@ -290,7 +245,6 @@ public class UserControllerTest {
                         "\"role\": \"USER\"}"))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
-        System.out.println(userRepository.findAll());
     }
 
 

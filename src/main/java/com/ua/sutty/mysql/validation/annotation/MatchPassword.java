@@ -1,4 +1,6 @@
-package com.ua.sutty.mysql.validator;
+package com.ua.sutty.mysql.validation.annotation;
+
+import com.ua.sutty.mysql.validation.validator.MatchPasswordValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

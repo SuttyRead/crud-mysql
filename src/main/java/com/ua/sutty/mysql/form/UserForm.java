@@ -2,7 +2,9 @@ package com.ua.sutty.mysql.form;
 
 import com.ua.sutty.mysql.model.Role;
 import com.ua.sutty.mysql.model.User;
-import com.ua.sutty.mysql.validator.MatchPassword;
+import com.ua.sutty.mysql.validation.annotation.EmailUnique;
+import com.ua.sutty.mysql.validation.annotation.MatchPassword;
+import com.ua.sutty.mysql.validation.annotation.UsernameUnique;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +22,8 @@ import java.time.LocalDate;
 @MatchPassword
 public class UserForm {
 
+    @UsernameUnique
+    @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9-_\\.]{1,20}$")
     private String username;
 
     @Pattern(regexp = "(?=^.{8,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$")
@@ -29,6 +33,7 @@ public class UserForm {
     private String confirmPassword;
 
     @Email
+    @EmailUnique
     private String email;
 
     @Pattern(regexp = "[A-Z][a-z]{1,25}")

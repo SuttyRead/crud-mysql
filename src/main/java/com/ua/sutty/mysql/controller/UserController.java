@@ -3,12 +3,9 @@ package com.ua.sutty.mysql.controller;
 import com.ua.sutty.mysql.form.UserForm;
 import com.ua.sutty.mysql.model.User;
 import com.ua.sutty.mysql.repository.UserRepository;
-import com.ua.sutty.mysql.validator.EmailValidator;
-import com.ua.sutty.mysql.validator.UsernameValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,22 +17,8 @@ public class UserController {
 
     private final UserRepository userRepository;
 
-    private final EmailValidator emailValidator;
-
-    private final UsernameValidator usernameValidator;
-
-    public UserController(final UserRepository userRepository,
-                          final EmailValidator emailValidator,
-                          final UsernameValidator usernameValidator) {
+    public UserController(final UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.emailValidator = emailValidator;
-        this.usernameValidator = usernameValidator;
-    }
-
-    @InitBinder("userForm")
-    public void addBinder(final WebDataBinder binder) {
-        binder.addValidators(emailValidator);
-        binder.addValidators(usernameValidator);
     }
 
     @GetMapping("/users")
@@ -87,6 +70,7 @@ public class UserController {
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateUser(@RequestBody @Valid final User user,
                                            @PathVariable final Long id) {
+
         log.trace("Call updateUser method");
 
         if (user == null) {
@@ -96,14 +80,6 @@ public class UserController {
 
         if (!userRepository.existsById(id)) {
             log.trace("User doesn't exists");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        User userById = userRepository.findUserById(id);
-
-        if (!userById.getUsername().equals(user.getUsername())
-                || !userById.getEmail().equals(user.getEmail())) {
-            log.trace("You can't change username or email");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
